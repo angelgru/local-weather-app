@@ -1,0 +1,4 @@
+<form [formGroup]="myForm">
+  <input type="text" placeholder="Enter city or zip" name="search" [formControl]="search">
+  <label *ngIf="search.invalid">The query must be longer than 1 character</label>
+</form>

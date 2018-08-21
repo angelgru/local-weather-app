@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '../../node_modules/@angular/common/http';
-import { Observable } from '../../node_modules/rxjs';
+import { Observable, Subject } from '../../node_modules/rxjs';
 import { map } from 'rxjs/operators';
 import { ICurrentWeather } from './interfaces';
 import { environment } from './environments/environment';
@@ -28,13 +28,27 @@ export class WeatherService implements IWeatherService{
 
   constructor(private httpClient: HttpClient) { }
 
-  getCurrentWeather(city: string, country: string): Observable<ICurrentWeather> {
-    return this.httpClient
-      .get<ICurrentWeatherData>(
-        `${environment.baseUrl}api.openweathermap.org/data/2.5/weather?` +
-          `q=${city},${country}&appid=${environment.appId}`
-      )
-      .pipe(map(data => this.transformToICurrentWeather(data)))
+  getCurrentWeather(search: string | number, country?: string): Observable<ICurrentWeather> {
+    let uriParams = '';
+
+    if(typeof search === 'string') {
+      uriParams = `q=${search}`;
+    } else {
+      uriParams = `zip=${search}`;
+    }
+
+    if(country) {
+      uriParams = `${uriParams}, ${country}`;
+    }
+    
+    return this.getCurrentWeatherHelper(uriParams);
+  }
+
+  private getCurrentWeatherHelper(uriParams: string): Observable<ICurrentWeather> {
+    return this.httpClient.get<ICurrentWeatherData>(
+      `${environment.baseUrl}api.openweathermap.org/data/2.5/weather?` +
+      `${uriParams}&appid=${environment.appId}`
+    ).pipe(map(data => this.transformToICurrentWeather(data)));
   }
 
   transformToICurrentWeather (data: ICurrentWeatherData): ICurrentWeather {
