@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port 5000",
+    "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
+  },
+  "config": {
+    "imageRepo": "angeldevelopment/localhost-weather",
+    "imageName": "localhost-weather",
+    "imagePort": "9090"
   },
   "private": true,
   "dependencies": {
